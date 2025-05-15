@@ -1101,50 +1101,43 @@
             });
         });
     </script>
-    <script>
-    document.getElementById('brevo-newsletter-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const messageEl = document.getElementById('form-message');
-        const button = document.getElementById('newsletter-button');
-        const submitText = document.getElementById('submit-text');
-        const spinner = document.getElementById('spinner');
+   <script>
+document.getElementById('brevo-newsletter-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const messageEl = document.getElementById('form-message');
+  const button = form.querySelector('button[type="submit"]');
+  
+  // Reset states
+  button.disabled = true;
+  messageEl.textContent = 'Enviando...';
+  messageEl.style.color = '';
 
-        // Mostra estado de carregamento
-        button.disabled = true;
-        submitText.textContent = "Enviando...";
-        spinner.classList.remove('hidden');
-        messageEl.textContent = '';
-
-        try {
-            // Envia para a função Netlify
-            const response = await fetch('/.netlify/functions/brevo-subscribe', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: form.email.value })
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                messageEl.textContent = '✅ Inscrição confirmada!';
-                messageEl.className = 'text-sm mt-2 min-h-[20px] text-green-300';
-                form.reset();
-            } else {
-                messageEl.textContent = '❌ ' + (data.error || 'Erro ao assinar');
-                messageEl.className = 'text-sm mt-2 min-h-[20px] text-red-300';
-            }
-
-        } catch (error) {
-            messageEl.textContent = '⚠️ Falha na conexão. Tente novamente mais tarde.';
-            messageEl.className = 'text-sm mt-2 min-h-[20px] text-yellow-300';
-        } finally {
-            // Restaura estado normal
-            button.disabled = false;
-            submitText.textContent = "Assinar Newsletter";
-            spinner.classList.add('hidden');
-        }
+  try {
+    const response = await fetch('/.netlify/functions/brevo-subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: form.email.value })
     });
+
+    const data = await response.json();
+    
+    if (response.ok) {
+      messageEl.textContent = '✅ ' + (data.message || 'Inscrição realizada!');
+      messageEl.style.color = 'green';
+      form.reset();
+    } else {
+      throw new Error(data.error || 'Erro desconhecido');
+    }
+    
+  } catch (error) {
+    console.error('Frontend error:', error);
+    messageEl.textContent = '❌ ' + error.message;
+    messageEl.style.color = 'red';
+  } finally {
+    button.disabled = false;
+  }
+});
 </script>
 
 </body>
