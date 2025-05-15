@@ -2,3 +2,4 @@
   command = "npm install && npm run build"
   functions = "netlify/functions"
   publish = "dist" # ou sua pasta de build
+  package = "@netlify/plugin-functions-install-core"
