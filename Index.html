@@ -837,45 +837,39 @@
     </section>
 
 <!-- Newsletter Section -->
-<section class="py-16 bg-teal-600 text-white">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="title-font text-3xl md:text-4xl font-bold mb-6">Receba conteúdos sobre saúde mental</h2>
-            <p class="text-lg mb-8 max-w-2xl mx-auto">
-                Assine nossa newsletter e receba artigos, dicas e informações sobre bem-estar psicológico diretamente no seu email.
-            </p>
-            
-            <!-- FORMULÁRIO ATUALIZADO COM ID DA LISTA (#3) -->
-            <form 
-                id="brevo-newsletter-form" 
-                action="https://api.brevo.com/v3/contacts" 
-                method="POST"
-                class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-            >
-                <input type="hidden" name="listIds[]" value="3"> <!-- ID #3 -->
-                <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="Seu melhor email" 
-                    class="flex-grow px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-teal-600 text-gray-800"
-                    required
-                >
-                <button 
-                    type="submit" 
-                    class="bg-white hover:bg-gray-100 text-teal-600 font-medium py-3 px-6 rounded-lg transition-slow shadow-md whitespace-nowrap"
-                >
-                    Assinar Newsletter
-                </button>
-            </form>
-            
-            <div id="form-message" class="text-sm mt-2 min-h-[20px]"></div>
-            
-            <p class="text-sm mt-4 opacity-80">
-                Não enviamos spam. Você pode cancelar sua inscrição a qualquer momento.
-            </p>
+    <section class="py-16 bg-teal-600 text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="title-font text-3xl md:text-4xl font-bold mb-6">Receba conteúdos sobre saúde mental</h2>
+                <p class="text-lg mb-8 max-w-2xl mx-auto">
+                    Assine nossa newsletter e receba artigos, dicas e informações sobre bem-estar psicológico diretamente no seu email.
+                </p>
+                
+                <form id="brevo-newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                    <input 
+                        type="email" 
+                        id="newsletter-email"
+                        placeholder="Seu melhor email" 
+                        class="flex-grow px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-teal-600 text-gray-800"
+                        required
+                    >
+                    <button 
+                        type="submit" 
+                        class="bg-white hover:bg-gray-100 text-teal-600 font-medium py-3 px-6 rounded-lg transition-slow shadow-md whitespace-nowrap"
+                    >
+                        Assinar Newsletter
+                    </button>
+                </form>
+                
+                <div id="form-message" class="text-sm mt-2 min-h-[20px]"></div>
+                
+                <p class="text-sm mt-4 opacity-80">
+                    Não enviamos spam. Você pode cancelar sua inscrição a qualquer momento.
+                </p>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-12">
