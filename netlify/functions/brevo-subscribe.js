@@ -1,27 +1,44 @@
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
+  // Verifica método HTTP
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Método não permitido' })
+    };
   }
 
   try {
+    // Parse do corpo da requisição
     const { email } = JSON.parse(event.body);
-    
-    const response = await fetch("https://api.brevo.com/v3/contacts", {
-      method: "POST",
+
+    // Validação básica
+    if (!email || !email.includes('@')) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Por favor, insira um email válido' })
+      };
+    }
+
+    // Requisição para a API do Brevo
+    const response = await fetch('https://api.brevo.com/v3/contacts', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "api-key": process.env.BREVO_API_KEY
+        'Content-Type': 'application/json',
+        'api-key': process.env.BREVO_API_KEY
       },
       body: JSON.stringify({
-        email,
-        listIds: [3],
+        email: email,
+        listIds: [3], // ATUALIZE para seu ID real
         updateEnabled: true
       })
     });
 
-    if (!response.ok) throw new Error(await response.text());
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Falha ao cadastrar no Brevo');
+    }
 
     return {
       statusCode: 200,
@@ -31,7 +48,9 @@ exports.handler = async (event) => {
   } catch (error) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ 
+        error: error.message || 'Erro ao processar inscrição'
+      })
     };
   }
 };
