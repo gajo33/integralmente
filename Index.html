@@ -837,38 +837,46 @@
     </section>
 
 <!-- Newsletter Section -->
-    <section class="py-16 bg-teal-600 text-white">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="title-font text-3xl md:text-4xl font-bold mb-6">Receba conteúdos sobre saúde mental</h2>
-                <p class="text-lg mb-8 max-w-2xl mx-auto">
-                    Assine nossa newsletter e receba artigos, dicas e informações sobre bem-estar psicológico diretamente no seu email.
-                </p>
-                
-                <form id="brevo-newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                    <input 
-                        type="email" 
-                        id="newsletter-email"
-                        placeholder="Seu melhor email" 
-                        class="flex-grow px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-teal-600 text-gray-800"
-                        required
-                    >
-                    <button 
-                        type="submit" 
-                        class="bg-white hover:bg-gray-100 text-teal-600 font-medium py-3 px-6 rounded-lg transition-slow shadow-md whitespace-nowrap"
-                    >
-                        Assinar Newsletter
-                    </button>
-                </form>
-                
-                <div id="form-message" class="text-sm mt-2 min-h-[20px]"></div>
-                
-                <p class="text-sm mt-4 opacity-80">
-                    Não enviamos spam. Você pode cancelar sua inscrição a qualquer momento.
-                </p>
-            </div>
+<section class="py-16 bg-teal-600 text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="title-font text-3xl md:text-4xl font-bold mb-6">Receba conteúdos sobre saúde mental</h2>
+            <p class="text-lg mb-8 max-w-2xl mx-auto">
+                Assine nossa newsletter e receba artigos, dicas e informações sobre bem-estar psicológico diretamente no seu email.
+            </p>
+            
+            <!-- Formulário de Newsletter -->
+            <form 
+                id="brevo-newsletter-form" 
+                class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+            >
+                <input 
+                    type="email" 
+                    id="newsletter-email"
+                    name="email"
+                    placeholder="Seu melhor email" 
+                    class="flex-grow px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-teal-600 text-gray-800"
+                    required
+                >
+                <button 
+                    type="submit" 
+                    class="bg-white hover:bg-gray-100 text-teal-600 font-medium py-3 px-6 rounded-lg transition-slow shadow-md whitespace-nowrap"
+                    id="newsletter-button"
+                >
+                    <span id="submit-text">Assinar Newsletter</span>
+                    <span id="spinner" class="hidden ml-2">⏳</span>
+                </button>
+            </form>
+            
+            <!-- Mensagem de feedback -->
+            <div id="form-message" class="text-sm mt-2 min-h-[20px]"></div>
+            
+            <p class="text-sm mt-4 opacity-80">
+                Não enviamos spam. Você pode cancelar sua inscrição a qualquer momento.
+            </p>
         </div>
-    </section>
+    </div>
+</section>
 
 
     <!-- Footer -->
@@ -1093,5 +1101,51 @@
             });
         });
     </script>
+    <script>
+    document.getElementById('brevo-newsletter-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const messageEl = document.getElementById('form-message');
+        const button = document.getElementById('newsletter-button');
+        const submitText = document.getElementById('submit-text');
+        const spinner = document.getElementById('spinner');
+
+        // Mostra estado de carregamento
+        button.disabled = true;
+        submitText.textContent = "Enviando...";
+        spinner.classList.remove('hidden');
+        messageEl.textContent = '';
+
+        try {
+            // Envia para a função Netlify
+            const response = await fetch('/.netlify/functions/brevo-subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: form.email.value })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                messageEl.textContent = '✅ Inscrição confirmada!';
+                messageEl.className = 'text-sm mt-2 min-h-[20px] text-green-300';
+                form.reset();
+            } else {
+                messageEl.textContent = '❌ ' + (data.error || 'Erro ao assinar');
+                messageEl.className = 'text-sm mt-2 min-h-[20px] text-red-300';
+            }
+
+        } catch (error) {
+            messageEl.textContent = '⚠️ Falha na conexão. Tente novamente mais tarde.';
+            messageEl.className = 'text-sm mt-2 min-h-[20px] text-yellow-300';
+        } finally {
+            // Restaura estado normal
+            button.disabled = false;
+            submitText.textContent = "Assinar Newsletter";
+            spinner.classList.add('hidden');
+        }
+    });
+</script>
+
 </body>
 </html>
