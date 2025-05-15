@@ -1,8 +1,0 @@
-{
-  "name": "seu-projeto",
-  "version": "1.0.0",
-  "dependencies": {
-    "node-fetch": "^3.3.2",
-    "@netlify/functions": "^1.4.0"
-  }
-}
